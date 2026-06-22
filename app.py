@@ -9,35 +9,37 @@ if css_file.exists():
     with open(css_file) as f:
         st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
 
-st.title("CareerPath AI")
-st.write("A modern AI-powered career guidance platform for 10th and 12th pass students.")
+# Header / Hero area
+st.markdown(
+    """
+    <div class="hero">
+      <div class="hero-content">
+        <h1 class="hero-title">CareerPath AI</h1>
+        <p class="hero-sub">Smart, friendly career guidance for 10th & 12th pass students — AI recommendations, roadmaps and colleges.</p>
+        <div class="hero-ctas">
+          <a class="btn btn-primary" href="#">Get Recommendations</a>
+          <a class="btn btn-outline" href="#">Take Aptitude Test</a>
+        </div>
+      </div>
+      <div class="hero-visual"></div>
+    </div>
+    """,
+    unsafe_allow_html=True,
+)
 
 st.sidebar.title("Navigate")
-pages = [
-    "Home",
-    "Aptitude Test",
-    "Career Recommendations",
-    "Career Explorer",
-    "College Finder",
-    "Entrance Exams",
-    "Scholarships",
-    "Salary Insights",
-    "Roadmap Generator",
-    "AI Counselor",
-    "About",
-]
-choice = st.sidebar.radio("Go to", pages)
+st.sidebar.markdown("""
+- Home
+- Aptitude Test
+- Career Recommendations
+- Career Explorer
+- College Finder
+- Entrance Exams
+- Scholarships
+- Salary Insights
+- Roadmap Generator
+- AI Counselor
+- About
+""")
 
-# Simple navigation — Streamlit multipage will also show the pages/ files in the app.
-st.info("This repository uses a pages/ directory for fully-featured pages. Use the Streamlit app menu (top-right) to jump to a numbered page or use the sidebar.")
-
-if choice == "Home":
-    st.header("Welcome to CareerPath AI")
-    st.markdown("\n".join([
-        "**AI Career Recommendations** — Get personalized career suggestions.",
-        "**Aptitude Test** — Assess strengths across skills.",
-        "**College Finder** — Filter colleges by state, budget, and type.",
-    ]))
-    st.button("Open Home Page (pages/1_Home.py)")
-else:
-    st.write(f"Use the Streamlit app menu to open the {choice} page for the full experience.")
+st.info("Use the sidebar to navigate. For the full multi-page UI open the pages/ files via the Streamlit app menu.")

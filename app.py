@@ -11,22 +11,23 @@ if css_file.exists():
     with open(css_file) as f:
         st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
 
-# Navigation map: label -> file path
+# Navigation map: label -> file path (now using app_pages to avoid Streamlit pages auto-listing)
+BASE = Path(__file__).parent
 PAGES = {
-    "Home": Path("pages/1_Home.py"),
-    "Aptitude Test": Path("pages/2_Aptitude_Test.py"),
-    "Career Recommendations": Path("pages/3_Career_Recommendations.py"),
-    "Career Explorer": Path("pages/4_Career_Explorer.py"),
-    "College Finder": Path("pages/5_College_Finder.py"),
-    "Entrance Exams": Path("pages/6_Entrance_Exams.py"),
-    "Scholarships": Path("pages/7_Scholarships.py"),
-    "Salary Insights": Path("pages/8_Salary_Insights.py"),
-    "Roadmap Generator": Path("pages/9_Roadmap_Generator.py"),
-    "AI Counselor": Path("pages/10_AI_Counselor.py"),
-    "About": Path("pages/11_About.py"),
-    "Resume Builder": Path("pages/13_Resume_Builder.py"),
-    "Skill Gap Analyzer": Path("pages/14_Skill_Gap_Analyzer.py"),
-    "Admin": Path("components/admin.py"),
+    "Home": BASE / "app_pages" / "page_home.py",
+    "Aptitude Test": BASE / "app_pages" / "page_aptitude_test.py",
+    "Career Recommendations": BASE / "app_pages" / "page_career_recommendations.py",
+    "Career Explorer": BASE / "app_pages" / "page_career_explorer.py",
+    "College Finder": BASE / "app_pages" / "page_college_finder.py",
+    "Entrance Exams": BASE / "app_pages" / "page_entrance_exams.py",
+    "Scholarships": BASE / "app_pages" / "page_scholarships.py",
+    "Salary Insights": BASE / "app_pages" / "page_salary_insights.py",
+    "Roadmap Generator": BASE / "app_pages" / "page_roadmap_generator.py",
+    "AI Counselor": BASE / "app_pages" / "page_ai_counselor.py",
+    "About": BASE / "app_pages" / "page_about.py",
+    "Resume Builder": BASE / "app_pages" / "page_resume_builder.py",
+    "Skill Gap Analyzer": BASE / "app_pages" / "page_skill_gap_analyzer.py",
+    "Admin": BASE / "components" / "admin.py",
 }
 
 st.sidebar.title("Navigate")

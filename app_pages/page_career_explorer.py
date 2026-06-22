@@ -1,10 +1,10 @@
 import streamlit as st
-from utils.career_data import CAREERS
+from utils.load_careers import load_careers
 
 
 def render():
     st.title('Career Explorer')
-
+    careers = load_careers()
     query = st.text_input('Search careers (name, skill, keyword)')
 
     results = []
@@ -12,13 +12,13 @@ def render():
         q = query.lower()
         results = [
             c
-            for c in CAREERS
+            for c in careers
             if q in c['name'].lower()
             or any(q in s.lower() for s in c.get('keywords', []))
             or any(q in s.lower() for s in c.get('skills', []))
         ]
     else:
-        results = CAREERS[:20]
+        results = careers[:20]
 
     for c in results:
         st.subheader(c['name'])

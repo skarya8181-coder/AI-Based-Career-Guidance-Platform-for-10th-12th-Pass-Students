@@ -25,7 +25,7 @@ def render():
             'budget': budget,
             'aptitude': st.session_state.get('aptitude_result', {}),
         }
-        recs = recommend(CAREERS, profile, top_k=5)
+        recs = recommend(CAREERS, profile, top_k=8)
         for r in recs:
             st.markdown(f"### {r['name']} — {r.get('match_percentage', 0)}% match")
             st.write(r.get('overview'))

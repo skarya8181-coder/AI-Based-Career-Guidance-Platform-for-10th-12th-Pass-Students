@@ -5,7 +5,7 @@ from utils.roadmap_generator import get_roadmap
 def render():
     st.title('Roadmap Generator')
 
-    career = st.selectbox('Choose career', ['AI Engineer', 'Data Scientist', 'Software Engineer', 'Doctor'] + [f'Career Example {i}' for i in range(4, 15)])
+    career = st.selectbox('Choose career', ['AI Engineer','Data Scientist','Software Engineer','Doctor'] + [f'Career Example {i}' for i in range(4,15)])
 
     if st.button('Generate Roadmap'):
         roadmap = get_roadmap(career)

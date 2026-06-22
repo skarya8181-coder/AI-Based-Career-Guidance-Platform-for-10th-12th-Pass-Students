@@ -1,5 +1,7 @@
 import streamlit as st
 from pathlib import Path
+import importlib.util
+import sys
 
 st.set_page_config(page_title="CareerPath AI", layout="wide")
 
@@ -9,35 +11,54 @@ if css_file.exists():
     with open(css_file) as f:
         st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
 
-st.title("CareerPath AI")
-st.write("A modern AI-powered career guidance platform for 10th and 12th pass students.")
+# Navigation map: label -> file path (now using app_pages to avoid Streamlit pages auto-listing)
+BASE = Path(__file__).parent
+PAGES = {
+    "Home": BASE / "app_pages" / "page_home.py",
+    "Aptitude Test": BASE / "app_pages" / "page_aptitude_test.py",
+    "Career Recommendations": BASE / "app_pages" / "page_career_recommendations.py",
+    "Career Explorer": BASE / "app_pages" / "page_career_explorer.py",
+    "College Finder": BASE / "app_pages" / "page_college_finder.py",
+    "Entrance Exams": BASE / "app_pages" / "page_entrance_exams.py",
+    "Scholarships": BASE / "app_pages" / "page_scholarships.py",
+    "Salary Insights": BASE / "app_pages" / "page_salary_insights.py",
+    "Roadmap Generator": BASE / "app_pages" / "page_roadmap_generator.py",
+    "AI Counselor": BASE / "app_pages" / "page_ai_counselor.py",
+    "About": BASE / "app_pages" / "page_about.py",
+    "Resume Builder": BASE / "app_pages" / "page_resume_builder.py",
+    "Skill Gap Analyzer": BASE / "app_pages" / "page_skill_gap_analyzer.py",
+    "Admin": BASE / "components" / "admin.py",
+}
 
 st.sidebar.title("Navigate")
-pages = [
-    "Home",
-    "Aptitude Test",
-    "Career Recommendations",
-    "Career Explorer",
-    "College Finder",
-    "Entrance Exams",
-    "Scholarships",
-    "Salary Insights",
-    "Roadmap Generator",
-    "AI Counselor",
-    "About",
-]
-choice = st.sidebar.radio("Go to", pages)
+page_names = list(PAGES.keys())
+# allow session navigation override
+if 'navigate_to' not in st.session_state:
+    st.session_state['navigate_to'] = None
 
-# Simple navigation — Streamlit multipage will also show the pages/ files in the app.
-st.info("This repository uses a pages/ directory for fully-featured pages. Use the Streamlit app menu (top-right) to jump to a numbered page or use the sidebar.")
+# current choice
+choice = st.sidebar.radio("Go to", page_names, index=0)
+# prefer an explicit navigate_to request from pages (set by a button)
+if st.session_state.get("navigate_to"):
+    choice = st.session_state.pop("navigate_to")
 
-if choice == "Home":
-    st.header("Welcome to CareerPath AI")
-    st.markdown("\n".join([
-        "**AI Career Recommendations** — Get personalized career suggestions.",
-        "**Aptitude Test** — Assess strengths across skills.",
-        "**College Finder** — Filter colleges by state, budget, and type.",
-    ]))
-    st.button("Open Home Page (pages/1_Home.py)")
-else:
-    st.write(f"Use the Streamlit app menu to open the {choice} page for the full experience.")
+
+def load_and_render(path: Path):
+    if not path.exists():
+        st.error(f"Page file not found: {path}")
+        return
+    module_name = f"page_{path.stem}"
+    try:
+        spec = importlib.util.spec_from_file_location(module_name, str(path))
+        module = importlib.util.module_from_spec(spec)
+        sys.modules[module_name] = module
+        spec.loader.exec_module(module)
+        if hasattr(module, "render"):
+            module.render()
+        else:
+            st.error(f"The page module {path.name} does not expose a render() function.")
+    except Exception as e:
+        st.exception(e)
+
+# Load selected page
+load_and_render(PAGES[choice])

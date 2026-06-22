@@ -1,6 +1,6 @@
 import streamlit as st
-from utils.helper import save_aptitude_result
 from utils.charts import radar_chart
+from utils.helper import save_aptitude_result
 
 
 def render():
@@ -13,20 +13,18 @@ def render():
         ("I often take lead in group work.", 'Leadership'),
         ("I enjoy debugging technical problems.", 'Problem Solving'),
     ]
-    # Duplicate to make 15 questions
-    q_list = questions * 3
+    # Duplicate to make 15-20 questions
+    q_list = (questions * 4)[:20]
 
     if 'answers' not in st.session_state:
         st.session_state['answers'] = [3] * len(q_list)
 
     with st.form('aptitude'):
-        st.progress(0)
         for i, (q, cat) in enumerate(q_list):
             st.slider(f"Q{i+1}. {q}", min_value=1, max_value=5, value=st.session_state['answers'][i], key=f'q{i}')
         submitted = st.form_submit_button('Submit')
 
     if submitted:
-        # compute category averages
         cats = {}
         for i, (q, cat) in enumerate(q_list):
             cats.setdefault(cat, []).append(st.session_state[f'q{i}'])
@@ -35,7 +33,5 @@ def render():
         st.write('Scores: ', scores)
         save_aptitude_result(scores)
         st.plotly_chart(radar_chart(scores, 'Your Aptitude'))
-
-        # classify
         top = max(scores.items(), key=lambda x: x[1])[0]
         st.info(f'Predicted personality: {top}')

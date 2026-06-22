@@ -3,6 +3,11 @@ from pathlib import Path
 import importlib.util
 import sys
 
+# Ensure project root is on sys.path so absolute imports inside page modules work
+BASE = Path(__file__).parent
+if str(BASE) not in sys.path:
+    sys.path.insert(0, str(BASE))
+
 st.set_page_config(page_title="CareerPath AI", layout="wide")
 
 # Load custom css
@@ -12,7 +17,6 @@ if css_file.exists():
         st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
 
 # Navigation map: label -> file path (now using app_pages to avoid Streamlit pages auto-listing)
-BASE = Path(__file__).parent
 PAGES = {
     "Home": BASE / "app_pages" / "page_home.py",
     "Aptitude Test": BASE / "app_pages" / "page_aptitude_test.py",
@@ -49,6 +53,9 @@ def load_and_render(path: Path):
         return
     module_name = f"page_{path.stem}"
     try:
+        # Ensure the project root is available for imports performed by the module
+        if str(BASE) not in sys.path:
+            sys.path.insert(0, str(BASE))
         spec = importlib.util.spec_from_file_location(module_name, str(path))
         module = importlib.util.module_from_spec(spec)
         sys.modules[module_name] = module
